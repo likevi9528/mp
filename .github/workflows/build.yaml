@@ -25,24 +25,38 @@ jobs:
           #!/bin/bash
 
           # 设置要替换的目标字符串和替换字符串
-          TARGET="{settings.GITHUB_PROXY}https:\/\/raw.githubusercontent.com"
-          REPLACEMENT="https:\/\/raw.jgithub.xyz"
-
-
-          # 指定要处理的config文件路径
-          CONFIG_FILE="app/helper/plugin.py"
-          # 使用sed命令替换文件中的目标字符串
-          sed -i "s/$TARGET/$REPLACEMENT/g" $CONFIG_FILE
+          TARGET="GITHUB_PROXY: Optional\[str\] = ''"
+          REPLACEMENT="GITHUB_PROXY: Optional[str] = 'https:\/\/mirror.ghproxy.com\/'"
 
           # 指定要处理的config文件路径
-          CONFIG_FILE="app/helper/resource.py"
+          CONFIG_FILE="app/core/config.py"
           # 使用sed命令替换文件中的目标字符串
           sed -i "s/$TARGET/$REPLACEMENT/g" $CONFIG_FILE
+          
           EOF
           chmod +x edit.sh
           ./edit.sh
-          cat app/helper/plugin.py | grep "jgithub"
-          cat app/helper/resource.py | grep "jgithub"
+          cat app/core/config.py | grep "ghproxy"
+
+          # # 设置要替换的目标字符串和替换字符串
+          # TARGET="{settings.GITHUB_PROXY}https:\/\/raw.githubusercontent.com"
+          # REPLACEMENT="https:\/\/raw.jgithub.xyz"
+
+
+          # # 指定要处理的config文件路径
+          # CONFIG_FILE="app/helper/plugin.py"
+          # # 使用sed命令替换文件中的目标字符串
+          # sed -i "s/$TARGET/$REPLACEMENT/g" $CONFIG_FILE
+
+          # # 指定要处理的config文件路径
+          # CONFIG_FILE="app/helper/resource.py"
+          # # 使用sed命令替换文件中的目标字符串
+          # sed -i "s/$TARGET/$REPLACEMENT/g" $CONFIG_FILE
+          # EOF
+          # chmod +x edit.sh
+          # ./edit.sh
+          # cat app/helper/plugin.py | grep "jgithub"
+          # cat app/helper/resource.py | grep "jgithub"
 
       - name: Release version
         id: release_version
