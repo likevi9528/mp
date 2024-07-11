@@ -41,6 +41,8 @@ jobs:
           EOF
           chmod +x edit.sh
           ./edit.sh
+          cat app/helper/plugin.py | grep "mirror.ghproxy.com"
+          cat app/helper/resource.py | grep "mirror.ghproxy.com"
 
       - name: Release version
         id: release_version
