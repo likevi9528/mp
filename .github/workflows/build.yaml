@@ -114,13 +114,13 @@ jobs:
        # 添加commit 防止workflows停止
       - name: push rep
         run: |
-          echo "BUILDTIME=$(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M')" >> $GITHUB_ENV
+          BUILDTIME = $(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M')
           cd my_source/
-          echo ${{ env.BUILDTIME }} >> commit
+          echo $BUILDTIME >> commit
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "triggle by commit ${{ env.BUILDTIME }}"
+          git commit -m "triggle by commit $BUILDTIME"
           git remote set-url origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git push -f -u origin main
 
