@@ -101,6 +101,21 @@ jobs:
           cache-from: type=gha, scope=${{ github.workflow }}-docker
           cache-to: type=gha, scope=${{ github.workflow }}-docker
 
+      - name: Get rep
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: my_source
+
+       # 添加commit 防止workflows停止
+      - name: push rep
+        run: |
+          cd my_source/
+          echo "`TZ=UTC-8 date`" >> commit
+          git add .
+          git commit -m "triggle by commit $(GITHUB_SHA)" -a
+          git push origin main
+
   # Windows-build:
   #   runs-on: windows-latest
   #   name: Build Windows Binary
