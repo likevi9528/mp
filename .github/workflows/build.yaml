@@ -101,6 +101,10 @@ jobs:
           cache-from: type=gha, scope=${{ github.workflow }}-docker
           cache-to: type=gha, scope=${{ github.workflow }}-docker
 
+      - name: back
+        run: |
+          cd ..
+
       - name: Get rep
         uses: actions/checkout@v4
         with:
