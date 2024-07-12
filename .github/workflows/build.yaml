@@ -124,8 +124,9 @@ jobs:
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           # git remote set-url origin git@github.com:${{ github.repository }}.git
           # git push -f origin
-          git push --set-upstream origin main
+          git push
 
+          
   # Windows-build:
   #   runs-on: windows-latest
   #   name: Build Windows Binary
