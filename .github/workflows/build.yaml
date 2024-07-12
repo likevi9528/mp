@@ -79,27 +79,27 @@ jobs:
       - name: Set Up Buildx
         uses: docker/setup-buildx-action@v3
 
-      # - name: Login DockerHub
-      #   uses: docker/login-action@v3
-      #   with:
-      #     username: ${{ secrets.DOCKER_USERNAME }}
-      #     password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Login DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # - name: Build Image
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: .
-      #     file: Dockerfile
-      #     platforms: |
-      #       linux/amd64
-      #       linux/arm64/v8
-      #     push: true
-      #     build-args: |
-      #       MOVIEPILOT_VERSION=${{ env.app_version }}
-      #     tags: ${{ steps.meta.outputs.tags }}
-      #     labels: ${{ steps.meta.outputs.labels }}
-      #     cache-from: type=gha, scope=${{ github.workflow }}-docker
-      #     cache-to: type=gha, scope=${{ github.workflow }}-docker
+      - name: Build Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          platforms: |
+            linux/amd64
+            linux/arm64/v8
+          push: true
+          build-args: |
+            MOVIEPILOT_VERSION=${{ env.app_version }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha, scope=${{ github.workflow }}-docker
+          cache-to: type=gha, scope=${{ github.workflow }}-docker
 
       - name: back
         run: |
@@ -111,16 +111,20 @@ jobs:
           ref: main
           path: my_source
 
-       # 添加commit 防止workflows停止
-      - name: push rep
+      - name: Set variables
         run: |
-          BUILDTIME = $(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M')
+          echo "BUILDTIME=$(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M')" >> $GITHUB_ENV
+        shell: bash
+
+       # 添加commit 防止workflows停止
+      - name: push rep        
+        run: |
           cd my_source/
-          echo ${{ BUILDTIME }} >> commit
+          echo ${{ env.BUILDTIME }} >> commit
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "triggle by commit ${{ BUILDTIME }}"
+          git commit -m "triggle by commit ${{ env.BUILDTIME }}"
           git remote set-url origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git push -f -u origin main
 
