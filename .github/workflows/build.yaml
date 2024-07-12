@@ -122,7 +122,7 @@ jobs:
           git add .
           git commit -m "triggle by commit ${{ env.BUILDTIME }}" -a
           # git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
-          git remote set-url origin git@github.com:${{ github.actor }}/${{ github.repository }}.git
+          git remote set-url origin git@github.com:${{ github.repository }}.git
           git push origin main
 
   # Windows-build:
