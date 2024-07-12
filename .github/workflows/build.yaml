@@ -110,14 +110,15 @@ jobs:
        # 添加commit 防止workflows停止
       - name: push rep
         run: |
+          echo "BUILDTIME=$(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M')" >> $GITHUB_ENV
           cd my_source/
-          echo "`TZ=UTC-8 date`" >> commit
+          echo ${{ env.BUILDTIME }} >> commit
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "triggle by commit $(GITHUB_SHA)" -a
+          git commit -m "triggle by commit ${{ env.BUILDTIME }}" -a
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
-          git push -f -u origin main
+          git push origin main
 
   # Windows-build:
   #   runs-on: windows-latest
