@@ -1,0 +1,108 @@
+name: 构建IYUUPlus镜像
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * 5"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: 构建iyuuplus-dev
+    env:
+      IMAGE_NAME: iyuuplus-dev
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+        with:
+          repository: ledccn/iyuuplus-dev
+
+      - name: Add init
+        run: |
+          tee init <<-'EOF'
+          #!/usr/bin/with-contenv bash
+          # shellcheck shell=bash
+
+          cd /iyuu || exit
+
+          ## 更新一次IYUU
+          if [[ ! -d .git ]]; then
+              echo "Clone IYUU script..."
+              git clone "${IYUU_REPO_URL}" /tmp/iyuu
+              find /tmp/iyuu -mindepth 1 -maxdepth 1 | xargs -I {} cp -r {} /iyuu
+              rm -rf /tmp/iyuu
+          else
+              echo "Update IYUU script..."
+              git remote set-url origin "${IYUU_REPO_URL}"
+              git fetch --all
+              git reset --hard origin/master
+          fi
+
+          if [ ! -d /var/tmp ]; then
+              mkdir /var/tmp
+          fi
+          EOF
+          chmod +x init
+          rm docker/Dockerfile
+          curl - sSL https://raw.githubusercontent.com/likevi9528/mp/main/iyuu-dev/Dockerfile > docker/Dockerfile
+
+      - name: Set Up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set Up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Set Up Cache
+        uses: actions/cache@v2
+        id: buildx-cache
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx
+
+      - name: Set variables
+        run: |
+          echo "BUILDTIME=$(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M') iyuu-dev" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Buildx
+        uses: docker/build-push-action@v5
+        with:
+          context: ./docker
+          file: docker/Dockerfile
+          platforms: linux/386,linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Get rep
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: my_source
+
+       # 添加commit 防止workflows停止
+      - name: push rep        
+        run: |
+          cd my_source/
+          echo ${{ env.BUILDTIME }} >> commit
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "triggle by commit ${{ env.BUILDTIME }}"
+          git remote set-url origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git push -f -u origin main
+      
+
+      # - name: Update DockerHub Description
+      #   uses: christian-korneck/update-container-description-action@v1
+      #   env:
+      #     DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD }}
+      #   with:
+      #     destination_container_repo: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
+      #     provider: dockerhub
+      #     readme_file: ./README.md
