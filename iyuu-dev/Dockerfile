@@ -5,8 +5,8 @@ LABEL Description="IYUUPlus-dev container with PHP ^8.3 + nginx + mysql based on
 LABEL Version="8.3"
 
 # 使用国内镜像（mirrors.aliyun.com ｜ mirrors.ustc.edu.cn）
-ARG package_url=mirrors.ustc.edu.cn
-RUN if [ $package_url ] ; then sed -i "s/dl-cdn.alpinelinux.org/${package_url}/g" /etc/apk/repositories ; fi
+# ARG package_url=mirrors.ustc.edu.cn
+# RUN if [ $package_url ] ; then sed -i "s/dl-cdn.alpinelinux.org/${package_url}/g" /etc/apk/repositories ; fi
 
 ENV PS1="\[\e[32m\][\[\e[m\]\[\e[36m\]\u \[\e[m\]\[\e[37m\]@ \[\e[m\]\[\e[34m\]\h\[\e[m\]\[\e[32m\]]\[\e[m\] \[\e[37;35m\]in\[\e[m\] \[\e[33m\]\w\[\e[m\] \[\e[32m\][\[\e[m\]\[\e[37m\]\d\[\e[m\] \[\e[m\]\[\e[37m\]\t\[\e[m\]\[\e[32m\]]\[\e[m\] \n\[\e[1;31m\]$ \[\e[0m\]" \
     LANG="C.UTF-8" \
@@ -123,7 +123,8 @@ fi
 if [ ! -d /var/tmp ]; then
     mkdir /var/tmp
 fi
-EOF
+EOF && \
+chmod +x init
 
 # 文件系统
 VOLUME [ "/iyuu" ]
