@@ -3,9 +3,9 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "30 */12 * * *" # 12:30 PM 0:30 AM UTC+8
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
     # paths:
     #   - version.py
 
@@ -113,7 +113,7 @@ jobs:
 
       - name: Set variables
         run: |
-          echo "BUILDTIME=$(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M')" >> $GITHUB_ENV
+          echo "BUILDTIME=$(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M') moviepilot" >> $GITHUB_ENV
         shell: bash
 
        # 添加commit 防止workflows停止
