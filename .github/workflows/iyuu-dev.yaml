@@ -2,7 +2,7 @@ name: 构建IYUUPlus镜像
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 4 * * 5"
+    - cron: "0 4 * * *"
 
 jobs:
   build:
@@ -54,8 +54,8 @@ jobs:
       - name: Login DockerHub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_USERNAME }}
 
       - name: Set Up Cache
         uses: actions/cache@v2
@@ -76,7 +76,7 @@ jobs:
           file: docker/Dockerfile
           platforms: linux/386,linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
 
       - name: Get rep
         uses: actions/checkout@v4
@@ -100,9 +100,9 @@ jobs:
       # - name: Update DockerHub Description
       #   uses: christian-korneck/update-container-description-action@v1
       #   env:
-      #     DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD }}
+      #     DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
+      #     DOCKER_PASS: ${{ secrets.DOCKER_PASSWORD }}
       #   with:
-      #     destination_container_repo: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
+      #     destination_container_repo: ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}
       #     provider: dockerhub
       #     readme_file: ./README.md
