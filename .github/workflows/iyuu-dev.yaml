@@ -43,7 +43,7 @@ jobs:
           EOF
           chmod +x init
           rm docker/Dockerfile
-          curl - sSL https://raw.githubusercontent.com/likevi9528/mp/main/iyuu-dev/Dockerfile > docker/Dockerfile
+          curl https://raw.githubusercontent.com/likevi9528/mp/main/iyuu-dev/Dockerfile > docker/Dockerfile
 
       - name: Set Up QEMU
         uses: docker/setup-qemu-action@v3
