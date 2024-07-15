@@ -98,7 +98,9 @@ RUN set -ex && \
     find /tmp/iyuu -mindepth 1 -maxdepth 1 | xargs -I {} cp -r {} /iyuu && \
     rm -rf /tmp/iyuu
 
-COPY init /init
+WORKDIR /
+
+COPY init .
 
 # 文件系统
 VOLUME [ "/iyuu" ]
