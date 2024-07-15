@@ -101,7 +101,7 @@ RUN set -ex && \
 WORKDIR /
 
 RUN set -ex && \
-touch init && chmod +x init \
+touch init && chmod +x init && \
 tee init <<-'EOF'
 #!/usr/bin/with-contenv bash
 # shellcheck shell=bash
