@@ -94,36 +94,37 @@ COPY --chmod=755 ./rootfs /
 EXPOSE 8780
 
 RUN set -ex && \
+    mkdir /iyuu && \
     git clone https://github.com/ledccn/iyuuplus-dev.git /iyuu
 # find /tmp/iyuu -mindepth 1 -maxdepth 1 | xargs -I {} cp -r {} /iyuu && \
 
-WORKDIR /
+# WORKDIR /
 
-RUN set -ex && \
-touch init && chmod +x init && \
-tee init <<-'EOF'
-#!/usr/bin/with-contenv bash
-# shellcheck shell=bash
+# RUN set -ex && \
+# touch init && chmod +x init && \
+# tee init <<-'EOF'
+# #!/usr/bin/with-contenv bash
+# # shellcheck shell=bash
 
-cd /iyuu || exit
+# cd /iyuu || exit
 
-## 更新一次IYUU
-if [[ ! -d .git ]]; then
-    echo "Clone IYUU script..."
-    git clone "${IYUU_REPO_URL}" /tmp/iyuu
-    find /tmp/iyuu -mindepth 1 -maxdepth 1 | xargs -I {} cp -r {} /iyuu
-    rm -rf /tmp/iyuu
-else
-    echo "Update IYUU script..."
-    git remote set-url origin "${IYUU_REPO_URL}"
-    git fetch --all
-    git reset --hard origin/master
-fi
+# ## 更新一次IYUU
+# if [[ ! -d .git ]]; then
+#     echo "Clone IYUU script..."
+#     git clone "${IYUU_REPO_URL}" /tmp/iyuu
+#     find /tmp/iyuu -mindepth 1 -maxdepth 1 | xargs -I {} cp -r {} /iyuu
+#     rm -rf /tmp/iyuu
+# else
+#     echo "Update IYUU script..."
+#     git remote set-url origin "${IYUU_REPO_URL}"
+#     git fetch --all
+#     git reset --hard origin/master
+# fi
 
-if [ ! -d /var/tmp ]; then
-    mkdir /var/tmp
-fi
-EOF
+# if [ ! -d /var/tmp ]; then
+#     mkdir /var/tmp
+# fi
+# EOF
 
 # 文件系统
 VOLUME [ "/iyuu" ]
