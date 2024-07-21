@@ -85,17 +85,14 @@ RUN set -ex && \
 RUN set -ex && \
     mkdir /iyuu && \
     git config --global --add pull.rebase false && \
-    git config --global --add safe.directory /iyuu
+    git config --global --add safe.directory /iyuu && \
+    git clone https://github.com/ledccn/iyuuplus-dev.git /iyuu
 
 # s6配置
 COPY --chmod=755 ./rootfs /
 
 # 暴露端口
 EXPOSE 8780
-
-RUN set -ex && \
-    git clone https://github.com/ledccn/iyuuplus-dev.git /iyuu
-# find /tmp/iyuu -mindepth 1 -maxdepth 1 | xargs -I {} cp -r {} /iyuu && \
 
 # WORKDIR /
 
