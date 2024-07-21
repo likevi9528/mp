@@ -94,7 +94,6 @@ COPY --chmod=755 ./rootfs /
 EXPOSE 8780
 
 RUN set -ex && \
-    mkdir /iyuu && \
     git clone https://github.com/ledccn/iyuuplus-dev.git /iyuu
 # find /tmp/iyuu -mindepth 1 -maxdepth 1 | xargs -I {} cp -r {} /iyuu && \
 
